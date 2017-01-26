@@ -1,6 +1,6 @@
 defmodule MP3Data do
   defstruct [:header, :frames, :sound_data]
-  def new(
+  def analysis(
   <<
   tag     :: bitstring-size(24),
   version :: bitstring-size(16),
@@ -131,13 +131,10 @@ end
 
 {:ok, file} = File.open path, [:read]
 
-music_data = MP3Data.new IO.binread(file, :all)
+binary_data = IO.binread(file, :all)
+music_data = MP3Data.analysis binary_data
+
+IO.inspect music_data
 
 File.close file
-
-{:ok, music_file} = File.open music_data.frames["TT2"], [:write]
-
-IO.binwrite music_file, music_data.sound_data
-
-File.close music_file
 
